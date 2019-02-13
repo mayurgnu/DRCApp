@@ -1,0 +1,172 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron" ng-controller="myCtrl">
+    <h3>{{myCtrl.Order_No}}</h3>
+    <button class="btn btn-success" ng-click="AddNewProduct()">+</button>&emsp;
+    <button class="btn btn-danger" ng-click="RemoveProduct()">-</button>&emsp;
+    <div class="row">
+        <div class="col-xl-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="obj in OrderList">
+                        <td>
+                            <select class="form-control" ng-model="obj.Product_Id" ng-change="fnSetProductPrice(obj)" ng-options="obj.Product_Id as obj.Name for obj in ProductList"></select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" ng-model="obj.Qty" ng-change="fnSetProductPrice(obj)" />
+                        </td>
+                        <td>{{obj.Price}}</td>
+                        <td>{{obj.Total}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6">
+            <label class="control-label">Netamount</label>
+            <input type="text" class="form-control" ng-model="myCtrl.TotalAmount" readonly />
+        </div>
+        <div class="col-xl-6">
+            <label class="control-label">GST</label>
+            <input type="text" class="form-control" ng-model="myCtrl.GstAmount" ng-change="fnCalculateTotalAmount()" />
+        </div>
+        <div class="col-xl-6">
+            <label class="control-label">DISC</label>
+            <input type="text" class="form-control" ng-model="myCtrl.Discount" ng-change="fnCalculateTotalAmount()" />
+        </div>
+        <div class="col-xl-6">
+            <label class="control-label">TotalAmount</label>
+            <input type="text" class="form-control" ng-model="myCtrl.PayableAmount" readonly />
+        </div>
+        <div class="col-xl-6">
+            <button class="btn btn-danger" ng-click="fnSaveOrder()">Save</button>&emsp;
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    @*$(document).ready(function () {
+        $.ajax({
+            url: '@Url.Action("GetAllOrders", "Home")',
+            success: function (data) {
+                console.log(data);
+            }
+        })
+    })*@
+</script>
+<script>
+    var app = angular.module("app", []);
+    app.controller("myCtrl", ["$scope", "$http", "$filter", function myfunction($scope, $http, $filter) {
+        $scope.message = "Mayur";
+        $scope.myCtrl = { TotalAmount: 0 };
+        $scope.OrderList = [];
+        $scope.OrderList.push({ Product_Id: '', Qty: 0, Price: 0, Total: 0 });
+        $scope.AddNewProduct = function () {
+            $scope.OrderList.push({ Product_Id: '', Qty: 0, Price: 0, Total: 0 });
+        }
+        $scope.RemoveProduct = function () {
+            $scope.OrderList.splice($scope.OrderList.length-1);
+        }
+        $scope.GetOrderNo = function () {
+            $http({
+                type: 'get',
+                url: '@Url.Action("GetOrderNo", "Home")'
+            }).then(function (data) {
+                console.log(data.data);
+                $scope.myCtrl.Order_No = 'Your Order no is :- ' + data.data;
+            });
+        }
+        $scope.GetOrderNo();
+        $scope.ProductList = [
+            { Product_Id: '', Name: "--Select Product--" },
+            { Product_Id: 1, Name: "galaxy-s", Price: 30000 },
+            { Product_Id: 2, Name: "Redmi Note-5 Pro", Price: 13000 },
+            { Product_Id: 3, Name: "dell-c1", Price: 25000 },
+            { Product_Id: 4, Name: "dell-c2", Price: 30000 },
+            { Product_Id: 5, Name: "dell-c3", Price: 35000 },
+            { Product_Id: 6, Name: "mobilo", Price: 200000 }
+        ];
+        $scope.fnCalculateNetAmount = function () {
+            var NetAmount = 0;
+            if ($scope.OrderList && $scope.OrderList.length > 0) {
+                $scope.OrderList.forEach(function (el) {
+                    NetAmount += parseFloat(el.Total);
+                })
+                $scope.myCtrl.TotalAmount = NetAmount;
+                //angular.forEach($scope.OrderList, function (el) {
+                //    $scope.myCtrl.NetAmount += parseFloat(el.Total);
+                //});
+            }
+            $scope.fnCalculateTotalAmount();
+        }
+        $scope.fnSetProductPrice = function (obj) {
+            obj.Price = $filter('filter')($scope.ProductList, function (el) { return obj.Product_Id == el.Product_Id })[0].Price;
+            if (obj.Qty == undefined || obj.Qty == '') {
+                obj.Qty = 1;
+                obj.Total = obj.Price;
+            }
+            else {
+                if (obj.Qty != undefined || obj.Qty != '') {
+                    obj.Total = obj.Price * obj.Qty;
+                }
+            }
+            $scope.fnCalculateNetAmount();
+        }
+        $scope.fnCalculateTotalAmount = function () {
+            debugger
+            var amount = parseFloat($scope.myCtrl.TotalAmount);
+            var GstAmount = parseFloat($scope.myCtrl.GstAmount);
+            var discount = parseFloat($scope.myCtrl.Discount);
+
+            if ($scope.myCtrl.GstAmount != undefined && $scope.myCtrl.GstAmount != '') {
+                amount = amount + (amount * GstAmount / 100);
+            }
+            if ($scope.myCtrl.Discount != undefined && $scope.myCtrl.Discount != '') {
+                amount = amount - (amount * discount / 100);
+            }
+            $scope.myCtrl.PayableAmount = amount;
+        }
+        $scope.fnSaveOrder = function () {
+            console.log($scope.myCtrl);
+            console.log($scope.OrderList);
+            $http({
+                method: 'POST',
+                url: "/Home/SaveOrders",
+                data: { mstObj: $scope.myCtrl, detailObj: $scope.OrderList },
+            }).then(function (data, status, headers, config) {
+                if (data.data.Status) {
+                    alert(data.data.Message);
+                } else {
+                    alert("error!");
+                }
+            });
+        }
+
+        @*$http({
+            type: 'get',
+            url: '@Url.Action("getCategoryList", "Home")'
+        }).then(function (data) {
+            console.log(data.data.aaData);
+            data.data.aaData.forEach(function (el) {
+                el.Name = el.Price == '' ? el.Name : '>>' + el.Name;
+                $scope.ProductList.push(el);
+            });
+        });*@
+
+
+    }]);
+</script>

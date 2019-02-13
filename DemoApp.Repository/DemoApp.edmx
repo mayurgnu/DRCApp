@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="MST_Cart">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="User_Id" Type="int" Nullable="false" />
+          <Property Name="Product_Id" Type="int" Nullable="false" />
+          <Property Name="Qty" Type="int" />
+          <Property Name="Price" Type="float" />
+          <Property Name="Total" Type="float" />
+        </EntityType>
+        <EntityType Name="TBL_Order_Detail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Order_ID" Type="int" Nullable="false" />
+          <Property Name="Product_Id" Type="int" />
+          <Property Name="Qty" Type="int" />
+          <Property Name="Price" Type="float" />
+        </EntityType>
+        <EntityType Name="TBL_Order_MST">
+          <Key>
+            <PropertyRef Name="Order_ID" />
+          </Key>
+          <Property Name="Order_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Order_No" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalAmount" Type="float" />
+          <Property Name="GstAmount" Type="float" />
+          <Property Name="Discount" Type="float" />
+          <Property Name="PayableAmount" Type="float" />
+        </EntityType>
+        <EntityType Name="tblCities">
+          <Key>
+            <PropertyRef Name="CityID" />
+          </Key>
+          <Property Name="CityID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CityName" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblProduct">
+          <Key>
+            <PropertyRef Name="productid" />
+          </Key>
+          <Property Name="productid" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" />
+          <Property Name="quantity" Type="int" />
+          <Property Name="price" Type="float" />
+        </EntityType>
+        <EntityType Name="tblRole">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="description" Type="nvarchar" MaxLength="50" />
+          <Property Name="createddate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="firstname" Type="nvarchar" MaxLength="50" />
+          <Property Name="lastname" Type="nvarchar" MaxLength="50" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="contactno" Type="nvarchar" MaxLength="25" />
+          <Property Name="gender" Type="int" />
+          <Property Name="username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="address" Type="nvarchar" MaxLength="100" />
+          <Property Name="stateid" Type="int" />
+          <Property Name="cityid" Type="int" />
+          <Property Name="countryid" Type="int" />
+          <Property Name="profilepicture" Type="nvarchar" MaxLength="500" />
+          <Property Name="birthdate" Type="date" />
+          <Property Name="isloginallowed" Type="bit" />
+          <Property Name="isemailverified" Type="bit" />
+        </EntityType>
+        <Association Name="FK_TBL_Order_Detail_TBL_Order_MST">
+          <End Role="TBL_Order_MST" Type="Self.TBL_Order_MST" Multiplicity="1" />
+          <End Role="TBL_Order_Detail" Type="Self.TBL_Order_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_Order_MST">
+              <PropertyRef Name="Order_ID" />
+            </Principal>
+            <Dependent Role="TBL_Order_Detail">
+              <PropertyRef Name="Order_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TBL_Order_MST_TBL_Order_MST1">
+          <End Role="TBL_Order_MST" Type="Self.TBL_Order_MST" Multiplicity="1" />
+          <End Role="TBL_Order_MST1" Type="Self.TBL_Order_MST" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_Order_MST">
+              <PropertyRef Name="Order_ID" />
+            </Principal>
+            <Dependent Role="TBL_Order_MST1">
+              <PropertyRef Name="Order_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MPModelStoreContainer">
+          <EntitySet Name="MST_Cart" EntityType="Self.MST_Cart" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TBL_Order_Detail" EntityType="Self.TBL_Order_Detail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TBL_Order_MST" EntityType="Self.TBL_Order_MST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblCities" EntityType="Self.tblCities" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblProduct" EntityType="Self.tblProduct" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblRole" EntityType="Self.tblRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblUser" EntityType="Self.tblUser" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_TBL_Order_Detail_TBL_Order_MST" Association="Self.FK_TBL_Order_Detail_TBL_Order_MST">
+            <End Role="TBL_Order_MST" EntitySet="TBL_Order_MST" />
+            <End Role="TBL_Order_Detail" EntitySet="TBL_Order_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TBL_Order_MST_TBL_Order_MST1" Association="Self.FK_TBL_Order_MST_TBL_Order_MST1">
+            <End Role="TBL_Order_MST" EntitySet="TBL_Order_MST" />
+            <End Role="TBL_Order_MST1" EntitySet="TBL_Order_MST" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MPModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="MST_Cart">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="User_Id" Type="Int32" Nullable="false" />
+          <Property Name="Product_Id" Type="Int32" Nullable="false" />
+          <Property Name="Qty" Type="Int32" />
+          <Property Name="Price" Type="Double" />
+          <Property Name="Total" Type="Double" />
+        </EntityType>
+        <EntityType Name="TBL_Order_Detail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Order_ID" Type="Int32" Nullable="false" />
+          <Property Name="Product_Id" Type="Int32" />
+          <Property Name="Qty" Type="Int32" />
+          <Property Name="Price" Type="Double" />
+          <NavigationProperty Name="TBL_Order_MST" Relationship="Self.FK_TBL_Order_Detail_TBL_Order_MST" FromRole="TBL_Order_Detail" ToRole="TBL_Order_MST" />
+        </EntityType>
+        <EntityType Name="TBL_Order_MST">
+          <Key>
+            <PropertyRef Name="Order_ID" />
+          </Key>
+          <Property Name="Order_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Order_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalAmount" Type="Double" />
+          <Property Name="GstAmount" Type="Double" />
+          <Property Name="Discount" Type="Double" />
+          <Property Name="PayableAmount" Type="Double" />
+          <NavigationProperty Name="TBL_Order_Detail" Relationship="Self.FK_TBL_Order_Detail_TBL_Order_MST" FromRole="TBL_Order_MST" ToRole="TBL_Order_Detail" />
+          <NavigationProperty Name="TBL_Order_MST1" Relationship="Self.FK_TBL_Order_MST_TBL_Order_MST1" FromRole="TBL_Order_MST" ToRole="TBL_Order_MST1" />
+          <NavigationProperty Name="TBL_Order_MST2" Relationship="Self.FK_TBL_Order_MST_TBL_Order_MST1" FromRole="TBL_Order_MST1" ToRole="TBL_Order_MST" />
+        </EntityType>
+        <EntityType Name="tblCities">
+          <Key>
+            <PropertyRef Name="CityID" />
+          </Key>
+          <Property Name="CityID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CityName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblProduct">
+          <Key>
+            <PropertyRef Name="productid" />
+          </Key>
+          <Property Name="productid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="quantity" Type="Int32" />
+          <Property Name="price" Type="Double" />
+        </EntityType>
+        <EntityType Name="tblRole">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="createddate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="firstname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="lastname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="contactno" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="gender" Type="Int32" />
+          <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="address" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="stateid" Type="Int32" />
+          <Property Name="cityid" Type="Int32" />
+          <Property Name="countryid" Type="Int32" />
+          <Property Name="profilepicture" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="birthdate" Type="DateTime" Precision="0" />
+          <Property Name="isloginallowed" Type="Boolean" />
+          <Property Name="isemailverified" Type="Boolean" />
+        </EntityType>
+        <Association Name="FK_TBL_Order_Detail_TBL_Order_MST">
+          <End Role="TBL_Order_MST" Type="Self.TBL_Order_MST" Multiplicity="1" />
+          <End Role="TBL_Order_Detail" Type="Self.TBL_Order_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_Order_MST">
+              <PropertyRef Name="Order_ID" />
+            </Principal>
+            <Dependent Role="TBL_Order_Detail">
+              <PropertyRef Name="Order_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TBL_Order_MST_TBL_Order_MST1">
+          <End Role="TBL_Order_MST" Type="Self.TBL_Order_MST" Multiplicity="1" />
+          <End Role="TBL_Order_MST1" Type="Self.TBL_Order_MST" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_Order_MST">
+              <PropertyRef Name="Order_ID" />
+            </Principal>
+            <Dependent Role="TBL_Order_MST1">
+              <PropertyRef Name="Order_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MPEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="MST_Cart" EntityType="Self.MST_Cart" />
+          <EntitySet Name="TBL_Order_Detail" EntityType="Self.TBL_Order_Detail" />
+          <EntitySet Name="TBL_Order_MST" EntityType="Self.TBL_Order_MST" />
+          <EntitySet Name="tblCities" EntityType="Self.tblCities" />
+          <EntitySet Name="tblProduct" EntityType="Self.tblProduct" />
+          <EntitySet Name="tblRole" EntityType="Self.tblRole" />
+          <EntitySet Name="tblUser" EntityType="Self.tblUser" />
+          <AssociationSet Name="FK_TBL_Order_Detail_TBL_Order_MST" Association="Self.FK_TBL_Order_Detail_TBL_Order_MST">
+            <End Role="TBL_Order_MST" EntitySet="TBL_Order_MST" />
+            <End Role="TBL_Order_Detail" EntitySet="TBL_Order_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TBL_Order_MST_TBL_Order_MST1" Association="Self.FK_TBL_Order_MST_TBL_Order_MST1">
+            <End Role="TBL_Order_MST" EntitySet="TBL_Order_MST" />
+            <End Role="TBL_Order_MST1" EntitySet="TBL_Order_MST" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MPModelStoreContainer" CdmEntityContainer="MPEntities">
+          <EntitySetMapping Name="MST_Cart">
+            <EntityTypeMapping TypeName="MPModel.MST_Cart">
+              <MappingFragment StoreEntitySet="MST_Cart">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="User_Id" ColumnName="User_Id" />
+                <ScalarProperty Name="Product_Id" ColumnName="Product_Id" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TBL_Order_Detail">
+            <EntityTypeMapping TypeName="MPModel.TBL_Order_Detail">
+              <MappingFragment StoreEntitySet="TBL_Order_Detail">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Order_ID" ColumnName="Order_ID" />
+                <ScalarProperty Name="Product_Id" ColumnName="Product_Id" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TBL_Order_MST">
+            <EntityTypeMapping TypeName="MPModel.TBL_Order_MST">
+              <MappingFragment StoreEntitySet="TBL_Order_MST">
+                <ScalarProperty Name="Order_ID" ColumnName="Order_ID" />
+                <ScalarProperty Name="Order_No" ColumnName="Order_No" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="GstAmount" ColumnName="GstAmount" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="PayableAmount" ColumnName="PayableAmount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblCities">
+            <EntityTypeMapping TypeName="MPModel.tblCities">
+              <MappingFragment StoreEntitySet="tblCities">
+                <ScalarProperty Name="CityID" ColumnName="CityID" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblProduct">
+            <EntityTypeMapping TypeName="MPModel.tblProduct">
+              <MappingFragment StoreEntitySet="tblProduct">
+                <ScalarProperty Name="productid" ColumnName="productid" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="price" ColumnName="price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblRole">
+            <EntityTypeMapping TypeName="MPModel.tblRole">
+              <MappingFragment StoreEntitySet="tblRole">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="createddate" ColumnName="createddate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblUser">
+            <EntityTypeMapping TypeName="MPModel.tblUser">
+              <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="firstname" ColumnName="firstname" />
+                <ScalarProperty Name="lastname" ColumnName="lastname" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="contactno" ColumnName="contactno" />
+                <ScalarProperty Name="gender" ColumnName="gender" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="stateid" ColumnName="stateid" />
+                <ScalarProperty Name="cityid" ColumnName="cityid" />
+                <ScalarProperty Name="countryid" ColumnName="countryid" />
+                <ScalarProperty Name="profilepicture" ColumnName="profilepicture" />
+                <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+                <ScalarProperty Name="isloginallowed" ColumnName="isloginallowed" />
+                <ScalarProperty Name="isemailverified" ColumnName="isemailverified" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
